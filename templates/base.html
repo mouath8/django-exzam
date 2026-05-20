@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}مشروع Django{% endblock %}</title>
+    <style>
+        /* تنسيق بسيط للمشروع */
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+        nav { background: #2c3e50; color: white; padding: 12px 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; padding: 6px 12px; background: #34495e; border-radius: 4px; }
+        nav a:hover { background: #1abc9c; }
+        nav span { color: #1abc9c; font-weight: bold; }
+        nav form { display: inline; margin: 0; }
+        nav button { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        nav button:hover { background: #c0392b; }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        .messages { margin-bottom: 15px; }
+        .messages .msg { padding: 10px; border-radius: 4px; margin-bottom: 8px; background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+
+<!-- ============================= -->
+<!-- شريط التنقل (Navbar) -->
+<!-- يتغير حسب حالة المستخدم -->
+<!-- ============================= -->
+<nav>
+    <strong style="color:#1abc9c;">🛒 متجري</strong>
+
+    {% if user.is_authenticated %}
+        <!-- 👤 مسجل دخول: تظهر الروابط الكاملة -->
+        <a href="{% url 'shop:product_list' %}">المنتجات</a>
+        <a href="{% url 'shop:product_create' %}">+ إضافة منتج</a>
+        <a href="{% url 'delivery:delivery_list' %}">التوصيل</a>
+        <a href="{% url 'delivery:delivery_create' %}">+ إضافة توصيلة</a>
+        <span>مرحباً، {{ user.username }} 👋</span>
+        <!-- زر تسجيل الخروج يستخدم POST للأمان -->
+        <form method="POST" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit">تسجيل خروج</button>
+        </form>
+    {% else %}
+        <!-- 👤 زائر غير مسجل: تظهر روابط التسجيل فقط -->
+        <a href="{% url 'accounts:login' %}">تسجيل دخول</a>
+        <a href="{% url 'accounts:register' %}">إنشاء حساب</a>
+    {% endif %}
+</nav>
+
+<!-- محتوى الصفحة -->
+<div class="container">
+    <!-- عرض رسائل النجاح أو الخطأ إن وجدت -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="msg">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

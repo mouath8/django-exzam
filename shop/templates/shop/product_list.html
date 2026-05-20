@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}قائمة المنتجات{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h2 style="color:#2c3e50;">🛒 قائمة المنتجات</h2>
+    {% if user.is_authenticated %}
+        <a href="{% url 'shop:product_create' %}" style="background:#1abc9c; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">
+            + إضافة منتج
+        </a>
+    {% endif %}
+</div>
+
+<!-- عرض المنتجات إذا وجدت -->
+{% if products %}
+    <table style="width:100%; background:white; border-collapse:collapse; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <thead style="background:#2c3e50; color:white;">
+            <tr>
+                <th style="padding:12px; text-align:right;">#</th>
+                <th style="padding:12px; text-align:right;">اسم المنتج</th>
+                <th style="padding:12px; text-align:right;">السعر</th>
+                <th style="padding:12px; text-align:right;">الوصف</th>
+                {% if user.is_authenticated %}
+                <th style="padding:12px; text-align:center;">الإجراءات</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr style="border-bottom:1px solid #eee;">
+                <td style="padding:12px;">{{ forloop.counter }}</td>
+                <td style="padding:12px; font-weight:bold;">{{ product.name }}</td>
+                <td style="padding:12px; color:#1abc9c;">{{ product.price }} ريال</td>
+                <td style="padding:12px; color:#666;">{{ product.description|default:"—" }}</td>
+                {% if user.is_authenticated %}
+                <td style="padding:12px; text-align:center;">
+                    <!-- زر التعديل -->
+                    <a href="{% url 'shop:product_update' product.pk %}"
+                       style="background:#3498db; color:white; padding:5px 10px; border-radius:3px; text-decoration:none; font-size:13px;">
+                        تعديل
+                    </a>
+                    <!-- زر الحذف -->
+                    <a href="{% url 'shop:product_delete' product.pk %}"
+                       style="background:#e74c3c; color:white; padding:5px 10px; border-radius:3px; text-decoration:none; font-size:13px; margin-right:5px;">
+                        حذف
+                    </a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <!-- لا توجد منتجات بعد -->
+    <div style="text-align:center; padding:60px; background:white; border-radius:8px; color:#888;">
+        <p style="font-size:18px;">لا توجد منتجات حالياً</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'shop:product_create' %}" style="color:#1abc9c;">أضف أول منتج الآن</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}
