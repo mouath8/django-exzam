@@ -1,26 +1,27 @@
 """
-ملف الإعدادات الرئيسي للمشروع
+ملف الإعدادات الرئيسي للمشروع (نسخة الإنتاج والتطوير المحدثة)
 هنا نضع كل إعدادات Django مثل: التطبيقات، قاعدة البيانات، اللغة...
 """
+import os
 from pathlib import Path
 
-# المسار الرئيسي للمشروع
+# المسار الرئيسي للمشروع (يعطي مساراً مطلقاً)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # المفتاح السري (لا تشاركه مع أحد في مشاريع حقيقية)
 SECRET_KEY = 'django-insecure-key-for-learning-only'
 
-# وضع التطوير: True = تظهر رسائل الأخطاء
-# DEBUG = False
+# وضع التطوير: True تظهر رسائل الأخطاء (اقلبه إلى False عند انتهاء مشروع التخرج والرفع الفعلي)
 DEBUG = True
-# السماح بالوصول من أي جهاز
-# ALLOWED_HOSTS = ['mouath.pythonanywhere.com', '127.0.0.1']
+
+# السماح بالوصول من أي جهاز ونطاق السيرفر الخاص بك
 ALLOWED_HOSTS = [
     'mouath.pythonanywhere.com', 
     '127.0.0.1', 
     'localhost', 
-    '10.0.0.2',  # ← مهم جداً لمحاكي أندرويد الافتراضي (Android Emulator)
+    '10.0.0.2',  # مهم جداً لمحاكي أندرويد الافتراضي (Android Emulator)
 ]
+
 # ===========================
 # التطبيقات المثبتة في المشروع
 # ===========================
@@ -31,17 +32,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  
-    'corsheaders',               # مكتبة API (DRF)
+    'rest_framework',                 # مكتبة الـ API (DRF)
+    'corsheaders',                    # مكتبة الـ CORS للسماح باتصال تطبيق Flutter
     'accounts',                       # تطبيق المستخدمين
     'shop',                           # تطبيق المنتجات
     'delivery',                       # تطبيق التوصيل
 ]
 
+# ===========================
+# الترتيب الصحيح والموصى به للـ Middleware
+# ===========================
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',                  # يجب أن يكون في الأعلى لـ Flutter
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',   # يجب أن يسبق الـ CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -72,12 +76,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'test.wsgi.application'
 
 # ===========================
-# قاعدة البيانات (SQLite مناسبة للتعلم)
+# قاعدة البيانات (باستخدام المسار المطلق BASE_DIR)
 # ===========================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',  # نوع قاعدة البيانات
-        'NAME': BASE_DIR / 'db.sqlite3',          # اسم الملف
+        'NAME': BASE_DIR / 'db.sqlite3',          # مسار الملف المطلق لمنع خطأ الـ OperationalError
     }
 }
 
@@ -96,7 +100,14 @@ TIME_ZONE = 'Asia/Riyadh'      # المنطقة الزمنية
 USE_I18N = True                # تفعيل الترجمة
 USE_TZ = True                  # استخدام المناطق الزمنية
 
+# ===========================
+# إعدادات الملفات الثابتة والميديا (مهمة جداً للسيرفر)
+# ===========================
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # المجلد الذي سيجمع فيه السيرفر ملفات الـ CSS والـ Admin
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'         # المجلد الخاص بالصور المرفوعة للمنتجات
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -104,15 +115,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # إعادة التوجيه بعد تسجيل الدخول والخروج
 # ===========================
 LOGIN_URL = '/accounts/login/'          # رابط صفحة تسجيل الدخول
-LOGIN_REDIRECT_URL = '/shop/'           # بعد تسجيل الدخول روح للمنتجات
-LOGOUT_REDIRECT_URL = '/shop/'           # بعد الخروج روح لصفحة المنتجات
+LOGIN_REDIRECT_URL = '/shop/'           # بعد تسجيل الدخول اذهب للمنتجات
+LOGOUT_REDIRECT_URL = '/shop/'          # بعد الخروج اذهب لصفحة المنتجات
 
 # ============================================
 # إعدادات الـ CORS لتطبيق Flutter
 # ============================================
 
-# أثناء التطوير والتجربة، اسمح لجميع النطاقات بالاتصال بالـ API
+# السماح لجميع الأجهزة والتطبيقات الخارجية بالاتصال بالـ API بدون حظر
 CORS_ALLOW_ALL_ORIGINS = True
 
-# إذا كنت تريد السماح بطلب الـ Cookies أو جلسات تسجيل الدخول (Sessions) عبر الـ API
+# السماح بطلب الـ Cookies أو جلسات تسجيل الدخول عبر الـ API
 CORS_ALLOW_CREDENTIALS = True
