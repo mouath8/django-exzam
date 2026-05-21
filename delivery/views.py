@@ -94,3 +94,68 @@ class DeliveryAPIView(ListCreateAPIView):
     """
     queryset = Delivery.objects.all()      # البيانات المطلوبة
     serializer_class = DeliverySerializer  # كيف نحوّلها إلى JSON
+
+
+
+
+
+# from django.shortcuts import render
+# from django.urls import reverse_lazy
+# from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+# from django.contrib.auth.mixins import LoginRequiredMixin  # بديل الـ decorator @login_required في الكلاسات
+# from rest_framework.generics import ListCreateAPIView     # من مكتبة DRF
+# from .models import Delivery
+# from .serializers import DeliverySerializer
+
+
+# # ============================================
+# # صفحة HTML - عرض قائمة التوصيلات
+# # ============================================
+# class DeliveryListView(LoginRequiredMixin, ListView):
+#     model = Delivery
+#     template_name = 'delivery/delivery_list.html'
+#     context_object_name = 'deliveries'  # الاسم الذي سيُستخدم داخل قالب الـ HTML
+
+
+# # ============================================
+# # صفحة HTML - إضافة توصيلة جديدة
+# # ============================================
+# class DeliveryCreateView(LoginRequiredMixin, CreateView):
+#     model = Delivery
+#     template_name = 'delivery/delivery_form.html'
+#     # تحديد الحقول المطلوبة من الـ Model ليقوم جنجو بإنشاء النموذج تلقائياً
+#     fields = ['delivery_person', 'phone', 'order_id', 'status'] 
+#     success_url = reverse_lazy('delivery:delivery_list')  # التوجيه بعد النجاح (استخدام reverse_lazy مهم هنا)
+
+
+# # ============================================
+# # صفحة HTML - تعديل توصيلة موجودة
+# # ============================================
+# class DeliveryUpdateView(LoginRequiredMixin, UpdateView):
+#     model = Delivery
+#     template_name = 'delivery/delivery_form.html'  # يستعمل نفس قالب الإضافة عادةً
+#     fields = ['delivery_person', 'phone', 'order_id', 'status']
+#     success_url = reverse_lazy('delivery:delivery_list')
+
+
+# # ============================================
+# # صفحة HTML - حذف توصيلة
+# # ============================================
+# class DeliveryDeleteView(LoginRequiredMixin, DeleteView):
+#     model = Delivery
+#     template_name = 'delivery/delivery_confirm_delete.html'
+#     success_url = reverse_lazy('delivery:delivery_list')
+
+
+# # ============================================
+# # API View (CBV) - إرجاع البيانات بصيغة JSON
+# # الرابط: /delivery/api/
+# # ============================================
+# class DeliveryAPIView(ListCreateAPIView):
+#     """
+#     هذا الـ View يعمل شيئين:
+#       GET  → يعرض جميع التوصيلات بصيغة JSON
+#       POST → يضيف توصيلة جديدة عبر JSON
+#     """
+#     queryset = Delivery.objects.all()       # البيانات المطلوبة
+#     serializer_class = DeliverySerializer  # كيف نحوّلها إلى JSON

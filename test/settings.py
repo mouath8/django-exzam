@@ -11,11 +11,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-key-for-learning-only'
 
 # وضع التطوير: True = تظهر رسائل الأخطاء
-DEBUG = False
-
+# DEBUG = False
+DEBUG = True
 # السماح بالوصول من أي جهاز
-ALLOWED_HOSTS = ['mouath.pythonanywhere.com', '127.0.0.1']
-
+# ALLOWED_HOSTS = ['mouath.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'mouath.pythonanywhere.com', 
+    '127.0.0.1', 
+    'localhost', 
+    '10.0.0.2',  # ← مهم جداً لمحاكي أندرويد الافتراضي (Android Emulator)
+]
 # ===========================
 # التطبيقات المثبتة في المشروع
 # ===========================
@@ -26,13 +31,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',                 # مكتبة API (DRF)
+    'rest_framework',  
+    'corsheaders',               # مكتبة API (DRF)
     'accounts',                       # تطبيق المستخدمين
     'shop',                           # تطبيق المنتجات
     'delivery',                       # تطبيق التوصيل
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -99,3 +106,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/accounts/login/'          # رابط صفحة تسجيل الدخول
 LOGIN_REDIRECT_URL = '/shop/'           # بعد تسجيل الدخول روح للمنتجات
 LOGOUT_REDIRECT_URL = '/shop/'           # بعد الخروج روح لصفحة المنتجات
+
+# ============================================
+# إعدادات الـ CORS لتطبيق Flutter
+# ============================================
+
+# أثناء التطوير والتجربة، اسمح لجميع النطاقات بالاتصال بالـ API
+CORS_ALLOW_ALL_ORIGINS = True
+
+# إذا كنت تريد السماح بطلب الـ Cookies أو جلسات تسجيل الدخول (Sessions) عبر الـ API
+CORS_ALLOW_CREDENTIALS = True
