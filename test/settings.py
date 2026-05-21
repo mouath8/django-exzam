@@ -1,51 +1,49 @@
 """
-ملف الإعدادات الرئيسي للمشروع (نسخة الإنتاج والتطوير المحدثة)
-هنا نضع كل إعدادات Django مثل: التطبيقات، قاعدة البيانات، اللغة...
+ملف الإعدادات الرئيسي للمشروع (نسخة الإنتاج والتطوير المحدثة - بدون مكتبات خارجية للـ CORS)
 """
 import os
 from pathlib import Path
 
-# المسار الرئيسي للمشروع (يعطي مساراً مطلقاً)
+# المسار الرئيسي للمشروع
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# المفتاح السري (لا تشاركه مع أحد في مشاريع حقيقية)
+# المفتاح السري
 SECRET_KEY = 'django-insecure-key-for-learning-only'
 
-# وضع التطوير: True تظهر رسائل الأخطاء (اقلبه إلى False عند انتهاء مشروع التخرج والرفع الفعلي)
+# وضع التطوير
 DEBUG = True
 
-# السماح بالوصول من أي جهاز ونطاق السيرفر الخاص بك
+# السماح بالوصول من أي جهاز
 ALLOWED_HOSTS = [
     'mouath.pythonanywhere.com', 
     '127.0.0.1', 
     'localhost', 
-    '10.0.0.2',  # مهم جداً لمحاكي أندرويد الافتراضي (Android Emulator)
+    '10.0.0.2',  
 ]
 
 # ===========================
 # التطبيقات المثبتة في المشروع
 # ===========================
 INSTALLED_APPS = [
-    'django.contrib.admin',           # لوحة الإدارة
-    'django.contrib.auth',            # نظام المصادقة (تسجيل دخول)
+    'django.contrib.admin',           
+    'django.contrib.auth',            
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',                 # مكتبة الـ API (DRF)
-    'corsheaders',                    # مكتبة الـ CORS للسماح باتصال تطبيق Flutter
-    'accounts',                       # تطبيق المستخدمين
-    'shop',                           # تطبيق المنتجات
-    'delivery',                       # تطبيق التوصيل
+    'rest_framework',                 
+    'accounts',                       
+    'shop',                           
+    'delivery',                       
 ]
 
 # ===========================
-# الترتيب الصحيح والموصى به للـ Middleware
+# تم استبدال الكورس الخارجي بالـ Middleware المخصصة الذاتية
 # ===========================
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',                  # يجب أن يكون في الأعلى لـ Flutter
+    'test.middleware.CorsMiddleware',  # ← هذا هو السطر الصحيح البديل
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',   # يجب أن يسبق الـ CommonMiddleware
+    'django.contrib.sessions.middleware.SessionMiddleware',   
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -60,7 +58,7 @@ ROOT_URLCONF = 'test.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # مجلد القوالب المشترك
+        'DIRS': [BASE_DIR / 'templates'],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,12 +74,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'test.wsgi.application'
 
 # ===========================
-# قاعدة البيانات (باستخدام المسار المطلق BASE_DIR)
+# قاعدة البيانات 
 # ===========================
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # نوع قاعدة البيانات
-        'NAME': BASE_DIR / 'db.sqlite3',          # مسار الملف المطلق لمنع خطأ الـ OperationalError
+        'ENGINE': 'django.db.backends.sqlite3',  
+        'NAME': BASE_DIR / 'db.sqlite3',          
     }
 }
 
@@ -95,35 +93,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # ===========================
 # إعدادات اللغة والوقت
 # ===========================
-LANGUAGE_CODE = 'ar'           # اللغة العربية
-TIME_ZONE = 'Asia/Riyadh'      # المنطقة الزمنية
-USE_I18N = True                # تفعيل الترجمة
-USE_TZ = True                  # استخدام المناطق الزمنية
+LANGUAGE_CODE = 'ar'           
+TIME_ZONE = 'Asia/Riyadh'      
+USE_I18N = True                
+USE_TZ = True                  
 
 # ===========================
-# إعدادات الملفات الثابتة والميديا (مهمة جداً للسيرفر)
+# إعدادات الملفات الثابتة والميديا 
 # ===========================
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # المجلد الذي سيجمع فيه السيرفر ملفات الـ CSS والـ Admin
+STATIC_ROOT = BASE_DIR / 'staticfiles'  
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'         # المجلد الخاص بالصور المرفوعة للمنتجات
+MEDIA_ROOT = BASE_DIR / 'media'         
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ===========================
 # إعادة التوجيه بعد تسجيل الدخول والخروج
 # ===========================
-LOGIN_URL = '/accounts/login/'          # رابط صفحة تسجيل الدخول
-LOGIN_REDIRECT_URL = '/shop/'           # بعد تسجيل الدخول اذهب للمنتجات
-LOGOUT_REDIRECT_URL = '/shop/'          # بعد الخروج اذهب لصفحة المنتجات
-
-# ============================================
-# إعدادات الـ CORS لتطبيق Flutter
-# ============================================
-
-# السماح لجميع الأجهزة والتطبيقات الخارجية بالاتصال بالـ API بدون حظر
-CORS_ALLOW_ALL_ORIGINS = True
-
-# السماح بطلب الـ Cookies أو جلسات تسجيل الدخول عبر الـ API
-CORS_ALLOW_CREDENTIALS = True
+LOGIN_URL = '/accounts/login/'          
+LOGIN_REDIRECT_URL = '/shop/'           
+LOGOUT_REDIRECT_URL = '/shop/'
